@@ -1,0 +1,14 @@
+# Data & outputs (do not publish patient/course data)
+*.xls
+*.xlsx
+*.pdf
+
+# R session
+.Rhistory
+.RData
+.Rproj.user
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*~

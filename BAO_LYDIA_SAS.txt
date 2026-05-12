@@ -1,0 +1,272 @@
+
+
+/********************BIS679A Final Exam-SAS portion**************************/
+
+/*Please save this file as your LASTNAME_FIRSTNAME_SAS.txt and upload to canvas when you have completed the exam
+
+
+
+
+/********************************SAS QUESTION 1A**************************************/
+*(1) TRANSFORM THE Question1A DATA SET FROM LONG TO WIDE FORMAT
+ (2) CALCULATE THE MEAN SYSTOLIC AND DIASTOLIC BLOOD PRESSURE FOR EACH INDIVIDUAL 
+     AND ADD TO THE TRANSFORMED DATA SET
+ (3) PRINT THE FINAL DATA SET (WHICH SHOULD BE CALLED BP).;
+
+
+
+data question1A;
+label dia="Diastolic Blood Pressure";
+label sys="Systolic Blood Pressure";
+input studyid time dia sys @@;
+datalines;
+6 1 70 110 6 2 90 130 6 3 87 132 6 4 100 145
+1 1 80 120 1 2 78 116 1 3 70 130
+3 1 65 110 3 2 68 116
+4 1 85 130 
+2 1 100 180 2 2 98 178 2 3 90 150 2 4 95 165
+5 1 90 160 5 2 80 145 5 3 78 130
+7 1 120 200 7 2 110 190
+;
+run;
+
+
+/********************************************************************************/
+
+/********************************ANSWER QUESTION 1A*******************************/
+
+/*****Answer Question 1A(1)*****/
+
+proc sort data=question1A;
+	by studyid time;
+run;
+
+proc transpose data=question1A out=dia_wide prefix=dia_;
+	by studyid;
+	id time;
+	var dia;
+run;
+
+proc transpose data=question1A out=sys_wide prefix=sys_;
+	by studyid;
+	id time;
+	var sys;
+run;
+
+/*****Answer Question 1A(2)*****/
+
+/*Merge data*/
+data BP;
+	merge dia_wide sys_wide;
+	by studyid;
+
+	/*compute mean systolic and diastolic blood pressure*/
+	mean_dia = mean(of dia_1-dia_4);
+	mean_sys = mean(of sys_1-sys_4);
+	
+	/*drop unnecessary columns*/
+	drop _name_ _label_; 
+run;
+
+/*****Answer Question 1A(3)*****/
+proc print data=BP label;
+	title "Final Wide BP Dataset with Mean Values";
+run;
+
+
+/********************************SAS QUESTION 1B**************************************/
+
+/* A data set and program in Base SAS are listed below. 
+(1) Transfrom the actions given in Base SAS to Proc SQL and recreate the data set shown below using a single call to PROC SQL and then use a PROC SQL call to print the data set*/
+
+/*The data set contains two variables BP and studyid 
+NOTE: There are repeated measurements for individuals - but the number of repeats is
+not the same for everyone*/
+
+data BIS679A;
+ input BP studyid @@;
+ datalines;
+   101.17227  1 122.4203 25 110.88798 13
+   97.29735 22 144.6827  1 109.40932  9
+   87.36679 16 124.0946 24 105.63567  7
+   90.65638 18 117.2881 10 123.31560  9
+  100.75780  5 130.4656  8 113.20283  6
+  103.03424  6 128.0769 22 117.40159  6
+  118.49285  6 117.3481 25 124.72791  8
+   90.87739  3 130.2331 18 118.65964 24
+   98.91097 20 121.8085 18  99.67942 13
+ 116.04664 15 135.3503 23 110.22923  3
+  98.83699  9 121.7769 15 118.57983 25
+ 107.17634 11 144.3175 10 103.48498  7
+ 106.57865 24 112.6658 13 108.83180  6
+ 112.41895 12 114.1032 20 108.47961 11
+  90.11466  8 143.4620  4 111.16155 19
+  96.78249  3 152.6434  1 121.42750  3
+ 105.92946  5 161.7785 25 112.99542  6
+  99.20130  8 120.7953  3 115.73482 17
+  85.60033 25 147.8829 12 119.09146 10
+ 107.10109 24 107.0153 21 125.24812  1
+  89.92500  8 116.8612 19 120.70143 19
+ 110.82297 25 100.8441  9 118.35129 11
+  97.00408 11 138.2748 25 117.59321 21
+ 113.00086 10 140.9625  5 115.67641 24
+ 101.52907 14 135.1729  4 108.17398 13
+  96.37424 23 151.8845  1 107.98008 22
+ 100.63479 12 110.8332 19 114.01019 14
+  89.21288  1 138.9834  1 120.59022  3
+  95.79020 23 140.4489  7 123.55836 24
+  92.29857  4 142.0919  5 118.84269 19
+  95.96720  3 102.7246 13 113.29204  1
+  99.85484  6 130.9742 12 106.90433 11
+ 100.72384 11 136.6169 19 112.65861  8
+  83.91847 14 112.0098 15 113.50734  4
+ 111.15617 17 134.1514 19 105.79199 19
+ 111.83739  8 141.0396 22 109.23756  9
+ 107.48283 10 123.8161  5 105.71406 10
+  98.25871 13 122.4932 16 122.34942 14
+  96.71316 21 110.7885  5 112.49866 24
+  84.89976  9 125.5663  2  99.83228  6
+ ;
+run;
+
+*Sort the data by id;
+proc sort data=BIS679A out=a;
+ by studyid;
+run;
+
+*Calculate the minimum and maximum bp for each studyid;
+proc means data=a noprint min max;
+ by studyid;
+ var bp;
+output out=b min=min_bp max=max_bp;
+run;
+
+*Calculate the difference in BP for those having more than 1 observation;
+data c; set b(rename=(_FREQ_=N));
+ if N > 1 then BP_difference=max_bp-min_bp; else BP_difference=.;
+ *Keep the studyid number of BP measures and BP_difference ;
+ keep studyID N BP_difference;
+ format BP_difference 5.2; /*Format BP difference*/
+ label N="Number of BP Measurements"; /*Label BP difference*/
+run;
+
+*Print the data set;
+title 'Print data set c from SAS';
+ proc print data=c label;
+ run;
+
+
+
+/********************************ANSWER QUESTION 1B*******************************/
+proc sql;
+    create table BIS679A (
+        BP      num,
+        studyid num
+    );
+
+    insert into BIS679A
+        values(101.17227,  1)  values(122.4203 , 25) values(110.88798, 13)
+        values( 97.29735, 22)  values(144.6827 ,  1) values(109.40932,  9)
+        values( 87.36679, 16)  values(124.0946 , 24) values(105.63567,  7)
+        values( 90.65638, 18)  values(117.2881 , 10) values(123.31560,  9)
+        values(100.75780,  5)  values(130.4656 ,  8) values(113.20283,  6)
+        values(103.03424,  6)  values(128.0769 , 22) values(117.40159,  6)
+        values(118.49285,  6)  values(117.3481 , 25) values(124.72791,  8)
+        values( 90.87739,  3)  values(130.2331 , 18) values(118.65964, 24)
+        values( 98.91097, 20)  values(121.8085 , 18) values( 99.67942, 13)
+        values(116.04664, 15)  values(135.3503 , 23) values(110.22923,  3)
+        values( 98.83699,  9)  values(121.7769 , 15) values(118.57983, 25)
+        values(107.17634, 11)  values(144.3175 , 10) values(103.48498,  7)
+        values(106.57865, 24)  values(112.6658 , 13) values(108.83180,  6)
+        values(112.41895, 12)  values(114.1032 , 20) values(108.47961, 11)
+        values( 90.11466,  8)  values(143.4620 ,  4) values(111.16155, 19)
+        values( 96.78249,  3)  values(152.6434 ,  1) values(121.42750,  3)
+        values(105.92946,  5)  values(161.7785 , 25) values(112.99542,  6)
+        values( 99.20130,  8)  values(120.7953 ,  3) values(115.73482, 17)
+        values( 85.60033, 25)  values(147.8829 , 12) values(119.09146, 10)
+        values(107.10109, 24)  values(107.0153 , 21) values(125.24812,  1)
+        values( 89.92500,  8)  values(116.8612 , 19) values(120.70143, 19)
+        values(110.82297, 25)  values(100.8441 ,  9) values(118.35129, 11)
+        values( 97.00408, 11)  values(138.2748 , 25) values(117.59321, 21)
+        values(113.00086, 10)  values(140.9625 ,  5) values(115.67641, 24)
+        values(101.52907, 14)  values(135.1729 ,  4) values(108.17398, 13)
+        values( 96.37424, 23)  values(151.8845 ,  1) values(107.98008, 22)
+        values(100.63479, 12)  values(110.8332 , 19) values(114.01019, 14)
+        values( 89.21288,  1)  values(138.9834 ,  1) values(120.59022,  3)
+        values( 95.79020, 23)  values(140.4489 ,  7) values(123.55836, 24)
+        values( 92.29857,  4)  values(142.0919 ,  5) values(118.84269, 19)
+        values( 95.96720,  3)  values(102.7246 , 13) values(113.29204,  1)
+        values( 99.85484,  6)  values(130.9742 , 12) values(106.90433, 11)
+        values(100.72384, 11)  values(136.6169 , 19) values(112.65861,  8)
+        values( 83.91847, 14)  values(112.0098 , 15) values(113.50734,  4)
+        values(111.15617, 17)  values(134.1514 , 19) values(105.79199, 19)
+        values(111.83739,  8)  values(141.0396 , 22) values(109.23756,  9)
+        values(107.48283, 10)  values(123.8161 ,  5) values(105.71406, 10)
+        values( 98.25871, 13)  values(122.4932 , 16) values(122.34942, 14)
+        values( 96.71316, 21)  values(110.7885 ,  5) values(112.49866, 24)
+        values( 84.89976,  9)  values(125.5663 ,  2) values( 99.83228,  6)
+    ;
+quit;
+
+* Sort the data by id;
+ proc sql;
+ 	create table a as
+	select *
+	from BIS679A
+	order by studyid;
+quit;
+
+
+* calculate min and max bp for each studyid;
+proc sql;
+	create table b as
+	select
+		studyid,
+		count(bp) as _FREQ_, /*frequency*/
+		min(bp) as min_bp,
+		max(bp) as max_bp
+	from a 
+	group by studyid
+	order by studyid;
+quit;
+
+* Calculate the diff in BP for those having more than 1 obs;
+proc sql;
+	create table c as
+	select
+		studyid,
+		_FREQ_ 
+			label = "Number of BP Measurement",
+		case
+			when _FREQ_ >1 then max_bp - min_bp
+			else .
+		end as BP_difference format = 5.2
+	from b
+	order by studyid;
+quit;
+
+
+* Print the dataset;
+title 'Print data set c from SQL';
+proc sql;
+	select *
+	from c;
+quit;
+
+
+
+/********************BIS679A Final Exam-R portion**************************/ 100 POINTS
+
+Creating dashboards is a very popular exercise and one that many epidemiological and clinical studies undertake, in part, to let participants see how the study is progressing over time in term of overall enrollment and demographics. Our study, The International Low Grade Glioma Registry, has been asked by NIH to create such a dashboard in the hopes of increasing participant interest in the study (www.gliomaregistry.org). 
+
+TA Tina Guo taught you how to create a dashboard in R Shiny while our guest lecturer Mr Seri Feliciano detailed the making of geospacial maps and graphs on Monday 12/1 (taped lecture available on Canvas). Use these new skills, create a Shiny app to let participants review study demographics (US residence by zipcode, age, and diagnosis). The participants should also be able to see ow these demographics change over time (i.e. at year end for each year of the study). 
+
+Your app should include a histogram to show the participant ages (in 10-year groups), a pie chart to show the diagnosis (1=astrocytoma, 2=mixed glioma, 3=oligodendroglioma, 4=other), and include an INTERACTIVE state-level map of the United States showing where U.S. participants of the study are located (i.e. when you hover over the map it should show the number of persons enrolled in each state). Include labeling for your figures to make them visually appealing and easy for persons to read. 
+
+You will be given an excel file (Glioma_BIS679A_2025) with these variables as well as an additional variable named "date of enrollment". Using 12/31 as the yearly enddate, give interactive updates on total participants, the age histogram and the diagnosis pie chart-i.e. the participant can see how things change over time. (The map need only be done at the final time point).
+
+Please hand in both a) your code as Firstname_Lastname_Final.R and b) a PDF (Firstname_Lastname_final_map.pdf) of only the map.
+
+The "best" dashboard will be selected by the TA's and instructor and placed on the study website (www.gliomaregistry.org) with a short bio and photo of the student who created it. This student will also win a bag of Starbucks coffee!
+
+
