@@ -38,17 +38,6 @@ install.packages(c(
 
 The app reads **`Glioma_BIS679A_2025.xls`** from the **same directory as `app.R`** (`read_excel(...)` in `app.R`).
 
-- **Public GitHub:** do **not** commit identifiable patient data or course-only restricted files. Prefer a **private** repo, or ship **only** code plus a short note that users must supply their own Excel file locally.
-- Add to `.gitignore` before pushing, for example:
-
-```gitignore
-*.xls
-*.xlsx
-.Rhistory
-.DS_Store
-```
-
-If your file lives elsewhere or has another name, change the path in `app.R` inside `read_excel()`.
 
 ---
 
@@ -83,7 +72,6 @@ LYDIA_BAO_Final/
 ## 6. 中文摘要
 
 - **内容：** 国际低级别胶质瘤登记库入组情况可视化——按年份累计入组人数、入组年龄分布、病理占比饼图、美国各州累计入组分层地图。  
-- **数据：** 需在本地放置 `Glioma_BIS679A_2025.xls`（与 `app.R` 同目录或修改路径）。**请勿将受限或可识别健康信息推送到公开仓库。**  
 - **运行：** `shiny::runApp("app.R")`。
 
 ---
