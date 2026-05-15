@@ -4,15 +4,15 @@ Interactive **R Shiny** dashboard for the International Low Grade Glioma Registr
 
 ---
 
-## 1. What’s in the app
+## 1. What's in the app
 
 | Area | Description |
 |------|-------------|
-| **Enrollment slider** | Choose “data through Dec 31” of a year; updates totals and charts below. |
+| **Enrollment slider** | Choose "data through Dec 31" of a year; updates totals and charts below. |
 | **Total participants** | Cumulative count up to that year (U.S. + international). |
 | **Age histogram** | 10-year age bands at enrollment (`ggplot2`). |
 | **Diagnosis pie** | Astrocytoma / mixed / oligodendroglioma / other / unknown (`plotly`). |
-| **U.S. state map** | Final cumulative enrollment bins (0, 1–10, 11–50, 51–200, 200+); **not** filtered by the year slider. |
+| **U.S. state map** | Cumulative enrollment bins (0, 1–10, 11–50, 51–200, 200+); **not** filtered by the year slider. |
 
 **Technical stack:** `shiny`, `readxl`, `dplyr`, `tidyr`, `stringr`, `lubridate`, `ggplot2`, `plotly`, `zipcodeR`, `maps`.
 
