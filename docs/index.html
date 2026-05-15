@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ILGG Enrollment Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f7fa;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background: #1a3a5c;
+      color: #fff;
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,.25);
+    }
+
+    header h1 {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: .3px;
+    }
+
+    header a {
+      color: #90caf9;
+      font-size: .8rem;
+      text-decoration: none;
+    }
+    header a:hover { text-decoration: underline; }
+
+    #app-frame {
+      flex: 1;
+      width: 100%;
+      border: none;
+      display: block;
+    }
+
+    #fallback {
+      display: none;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+      color: #555;
+      text-align: center;
+      padding: 40px;
+    }
+
+    #fallback a {
+      display: inline-block;
+      padding: 10px 24px;
+      background: #1a3a5c;
+      color: #fff;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>International Low Grade Glioma Registry — Enrollment Dashboard</h1>
+    <a href="https://fgkm0803.shinyapps.io/LYDIA_BAO_Final/" target="_blank" rel="noopener">
+      ↗ Open in new tab
+    </a>
+  </header>
+
+  <iframe
+    id="app-frame"
+    src="https://fgkm0803.shinyapps.io/LYDIA_BAO_Final/"
+    title="ILGG Enrollment Dashboard"
+    allowfullscreen
+    loading="lazy"
+  ></iframe>
+
+  <div id="fallback">
+    <p>If the dashboard doesn't load above, open it directly:</p>
+    <a href="https://fgkm0803.shinyapps.io/LYDIA_BAO_Final/" target="_blank" rel="noopener">
+      Open Dashboard
+    </a>
+  </div>
+
+  <script>
+    // Show fallback if iframe fails to load within 12 s
+    const frame = document.getElementById('app-frame');
+    const fallback = document.getElementById('fallback');
+    let loaded = false;
+
+    frame.addEventListener('load', () => { loaded = true; });
+
+    setTimeout(() => {
+      if (!loaded) {
+        frame.style.display = 'none';
+        fallback.style.display = 'flex';
+      }
+    }, 12000);
+  </script>
+
+</body>
+</html>

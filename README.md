@@ -1,6 +1,10 @@
 # International Low Grade Glioma Registry — Enrollment Dashboard (R Shiny)
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-shinyapps.io-blue?logo=r)](https://fgkm0803.shinyapps.io/LYDIA_BAO_Final/)
+
 Interactive **R Shiny** dashboard for the International Low Grade Glioma Registry: cumulative enrollment through a selected year, age and pathology distributions, and a **U.S. choropleth** of cumulative participants by state (ZIP → state via `zipcodeR`). Cleaning supports both U.S. and international postal formats; enrollment window filter **2000–01-01** through **2025-12-01**.
+
+> **[→ Open live dashboard](https://fgkm0803.shinyapps.io/LYDIA_BAO_Final/)** *(deployed on shinyapps.io using a synthetic demo dataset)*
 
 ---
 
