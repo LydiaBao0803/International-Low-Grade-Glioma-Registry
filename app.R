@@ -44,7 +44,6 @@ library(stringr)
 library(lubridate)
 library(ggplot2)
 library(plotly)
-library(zipcodeR)
 library(maps)
 
 # ==========================DATA LAYER===============================
@@ -170,18 +169,14 @@ glioma <- raw_glioma %>%
 
 ## ---- 3. US state mapping (for US participants only) ----
 
-# Get unique non-missing US-like ZIPs from glioma
-unique_zips <- unique(na.omit(glioma$zip5))
-
-# Look up ZIP info (US only) using zipcodeR
-zip_info <- suppressMessages(
-  reverse_zipcode(unique_zips)
-)
+# Static ZIP→state lookup bundled with the app (no terra/zipcodeR needed)
+zip_info <- read.csv("zip_state_lookup.csv",
+                     colClasses = c("character", "character"))
 
 # Join state back to main glioma data
 glioma <- glioma %>%
   left_join(
-    zip_info %>% select(zipcode, state),
+    zip_info,
     by = c("zip5" = "zipcode")
   )
 
