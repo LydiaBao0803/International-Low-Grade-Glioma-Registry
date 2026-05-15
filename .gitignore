@@ -1,6 +1,11 @@
-# Data & outputs (do not publish patient/course data)
+# Real patient data — never commit
 *.xls
-*.xlsx
+Glioma_BIS679A_2025.xlsx
+
+# Allow the synthetic demo dataset
+!Glioma_BIS679A_2025_demo.xlsx
+
+# Other outputs
 *.pdf
 
 # R session

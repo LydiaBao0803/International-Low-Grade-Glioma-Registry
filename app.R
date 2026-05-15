@@ -56,10 +56,16 @@ library(maps)
 #  - Prepare helper functions and values for Shiny
 
 ## ---- 1. Read raw data & basic ZIP processing ----
+# Use real data if present locally; fall back to the included demo dataset.
+data_file <- if (file.exists("Glioma_BIS679A_2025.xls")) {
+  "Glioma_BIS679A_2025.xls"
+} else {
+  "Glioma_BIS679A_2025_demo.xlsx"
+}
 raw_glioma <- read_excel(
-  "Glioma_BIS679A_2025.xls",
+  data_file,
   col_types = c("date", "text", "numeric", "date")
-) %>% 
+) %>%
   rename(
     dob            = "Date of Birth (MM/DD/YYYY)",
     zipcode        = "Zip Code",
